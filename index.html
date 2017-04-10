@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Speech to Text</title>
+		<style type="text/css">
+			#result{
+				height: 200px;
+				border: 1px;
+				padding: 10px;
+				box-shadow: 0 0 10px 0 #bbb;
+				margin-bottom: 30px;
+				line-height: 25px;
+				font-size: 14px;
+			}
+			button{
+				font-size: 20px;
+				position: absolute;
+				top: 240px;
+				left: 50%
+			}
+		</style>
+	</head>
+	<body>
+		<h3 align="centre">Speech to Text Web App</h3>
+		<div id = "result"></div>
+		<button onclick="start();">Start</button>
+		<script type="text/javascript">
+			var r = document.getElementById('result');
+
+			function start()
+			{
+				if('webkitSpeechRecognition' in window)
+				{
+					var speechRecognizer = new webkitSpeechRecognition();
+					speechRecognizer.continuous = true;
+					speechRecognizer.interimResults = true;
+					speechRecognizer.lang = 'en-EN';
+					speechRecognizer.start();
+
+					var final = '';
+
+					speechRecognizer.onresult = function(event)
+					{
+						var interim = '';
+						for(var i = event.resultIndex; i < event.results.length; i++)
+						{
+							var transcript = event.results[i][0].transcript;
+							transcript.replace("\n", "<br>");
+							if(event.results[i].isFinal)
+							{
+								final = final + transcript;
+							}
+							else
+							{
+								interim = interim + transcript;
+							}
+						}
+						r.innerHTML = final + '<span style="color:#999">' + interim + '</span>';
+
+					};
+
+					speechRecognizer.onerror = function (event)
+					{
+
+					};	
+				}
+				else
+				{
+					r.innerHTML = 'Browser not supported';	
+				}
+			}
+
+			
+		</script>
+	</body>
+</html>
